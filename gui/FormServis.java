@@ -21,6 +21,7 @@ public class FormServis extends BaseForm {
 
     // JANGAN diberi nilai awal di sini
     private JTextField txtKendaraanId;
+    private JTextField txtJenisPekerjaanId;
     private JTextField txtTanggalMasuk;
     private JTextField txtKeluhan;
     private JTextField txtStatus;
@@ -31,25 +32,38 @@ public class FormServis extends BaseForm {
     private int idTerpilih;
 
     public FormServis() {
-        super("SiTiket - Data Servis Kendaraan", 780, 480);
+        super("Servis Kendaraan - Data Servis", 800, 500);
         muatTabel();
     }
 
     @Override
     protected void susunKomponen() {
         txtKendaraanId = new JTextField();
+        txtJenisPekerjaanId = new JTextField();
         txtTanggalMasuk = new JTextField();
         txtKeluhan = new JTextField();
         txtStatus = new JTextField();
         txtBiaya = new JTextField();
 
-        String[] label = {"ID Kendaraan", "Tanggal Masuk", "Keluhan", "Status", "Biaya"};
-        JComponent[] isian = {txtKendaraanId, txtTanggalMasuk, txtKeluhan, txtStatus, txtBiaya};
-        String[] kolom = {"ID Kendaraan", "Tanggal Masuk", "Keluhan", "Status", "Biaya"};
+        String[] label = {
+                "ID Kendaraan", "ID Jenis Pekerjaan",
+                "Tanggal Masuk", "Keluhan", "Status", "Biaya"
+        };
+        JComponent[] isian = {
+                txtKendaraanId, txtJenisPekerjaanId,
+                txtTanggalMasuk, txtKeluhan, txtStatus, txtBiaya
+        };
+        String[] kolom = {
+                "ID Kendaraan", "ID Jenis Pekerjaan",
+                "Tanggal Masuk", "Keluhan", "Status", "Biaya"
+        };
 
         model = new GenericTableModel<Servis>(kolom,
-                s -> new Object[]{s.getKendaraanId(), s.getTanggalMasuk(),
-                        s.getKeluhan(), s.getStatus(), s.getBiaya()});
+                s -> new Object[]{
+                        s.getKendaraanId(), s.getJenisPekerjaanId(),
+                        s.getTanggalMasuk(), s.getKeluhan(),
+                        s.getStatus(), s.getBiaya()
+                });
 
         tabel = new JTable(model);
         tabel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -96,6 +110,7 @@ public class FormServis extends BaseForm {
     private void kosongkan() {
         idTerpilih = 0;
         txtKendaraanId.setText("");
+        txtJenisPekerjaanId.setText("");
         txtTanggalMasuk.setText("");
         txtKeluhan.setText("");
         txtStatus.setText("");
@@ -106,7 +121,8 @@ public class FormServis extends BaseForm {
 
     private void pilihBaris(Servis s) {
         idTerpilih = s.getId();
-        txtKendaraanId.setText(s.getKendaraanId());
+        txtKendaraanId.setText(String.valueOf(s.getKendaraanId()));
+        txtJenisPekerjaanId.setText(String.valueOf(s.getJenisPekerjaanId()));
         txtTanggalMasuk.setText(s.getTanggalMasuk());
         txtKeluhan.setText(s.getKeluhan());
         txtStatus.setText(s.getStatus());
@@ -115,15 +131,30 @@ public class FormServis extends BaseForm {
 
     /** Mengambil isian layar menjadi objek Servis. */
     private Servis dariIsian() {
-        double biayaVal = 0;
+        int kendaraanId = 0;
+        int jenisPekerjaanId = 0;
+        double biayaVal = -1;
+
+        try {
+            kendaraanId = Integer.parseInt(txtKendaraanId.getText().trim());
+        } catch (NumberFormatException ignored) {}
+
+        try {
+            jenisPekerjaanId = Integer.parseInt(txtJenisPekerjaanId.getText().trim());
+        } catch (NumberFormatException ignored) {}
+
         try {
             biayaVal = Double.parseDouble(txtBiaya.getText().trim());
-        } catch (NumberFormatException e) {
-            biayaVal = 0;
-        }
+        } catch (NumberFormatException ignored) {}
 
-        Servis s = new Servis(txtKendaraanId.getText(), txtTanggalMasuk.getText(),
-                txtKeluhan.getText(), txtStatus.getText(), biayaVal);
+        Servis s = new Servis(
+                kendaraanId,
+                jenisPekerjaanId,
+                txtTanggalMasuk.getText(),
+                txtKeluhan.getText(),
+                txtStatus.getText(),
+                biayaVal
+        );
         s.setId(idTerpilih);
         return s;
     }
