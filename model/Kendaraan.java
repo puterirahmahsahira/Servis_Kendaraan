@@ -70,26 +70,19 @@ public class Kendaraan extends BaseEntity {
      * Memvalidasi aturan bisnis data kendaraan sebelum query dikirim ke database.
      * Menggunakan .trim().isEmpty() agar tetap kompatibel dengan Java 8.
      */
-    @Override
+        @Override
     public void validasi() throws ValidationException {
-        // Validasi Plat Nomor
         if (platNomor == null || platNomor.trim().isEmpty()) {
-            throw new ValidationException("Isian plat nomor tidak sah: tidak boleh kosong");
+            throw new ValidationException("plat nomor", "tidak boleh kosong");
         }
-
-        // Validasi Merek
         if (merek == null || merek.trim().isEmpty()) {
-            throw new ValidationException("Isian merek tidak sah: tidak boleh kosong");
+            throw new ValidationException("merek", "tidak boleh kosong");
         }
-
-        // Validasi Tahun Perakitan
         if (tahun < 1900 || tahun > 2100) {
-            throw new ValidationException("Isian tahun tidak sah: masukkan tahun antara 1900 - 2100");
+            throw new ValidationException("tahun", "harus antara 1900 - 2100");
         }
-
-        // Validasi Relasi ID Pelanggan (Foreign Key)
         if (pelangganId <= 0) {
-            throw new ValidationException("Isian ID pelanggan tidak sah: harus lebih dari 0");
+            throw new ValidationException("ID pelanggan", "harus lebih dari 0");
         }
     }
 
